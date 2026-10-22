@@ -17,7 +17,35 @@ export function getProducts(): Product[] {
     bom: true,
   });
 
-  console.log(rows[0]);
+  cachedProducts = rows.map((row, index): Product => {
+    const { name, manufacturer, description, category } = row;
+    const rawPrice = row.price;
 
-  return [];
+    if (!name || !manufacturer || !description || !category || !rawPrice) {
+      throw new Error(`Missing fields at row ${index + 2}`);
+    }
+
+    if (!['battery', 'solar panel', 'connector'].includes(category)) {
+      throw new Error(`Invalid category at row ${index + 2}`);
+    }
+
+    const price = Number(rawPrice);
+
+    if (!Number.isFinite(price) || price < 0) {
+      throw new Error(`Invalid price at row ${index + 2}`);
+    }
+
+    return {
+      id: String(index + 1),
+      name,
+      manufacturer,
+      description,
+      category: category as Product['category'],
+      price,
+      capacityKwh: null,
+      powerW: null,
+    };
+  });
+
+  return cachedProducts;
 }
