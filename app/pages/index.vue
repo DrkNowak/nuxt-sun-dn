@@ -15,6 +15,7 @@ const {
 <template>
   <main>
     <h1>Solar equipment</h1>
+    <ProductFilters />
 
     <p v-if="status === 'pending'">Loading products...</p>
 
@@ -23,17 +24,17 @@ const {
     <template v-if="products">
       <p>Found {{ products.length }} products</p>
 
-      <ul>
-        <li v-for="product in products" :key="product.id">
-          <h2>{{ product.name }}</h2>
-          <p>{{ product.manufacturer }}</p>
-          <p>{{ product.price }}</p>
-          <p v-if="product.powerW !== null">Power: {{ product.powerW }} W</p>
-          <p v-if="product.capacityKwh !== null">
-            Capacity: {{ product.capacityKwh }} kWh
-          </p>
-        </li>
-      </ul>
+      <div class="products">
+        <ProductCard v-for="product in products" :key="product.id" :product="product" />
+      </div>
     </template>
   </main>
 </template>
+
+<style scoped>
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 16px;
+}
+</style>
