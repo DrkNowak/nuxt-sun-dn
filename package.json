@@ -1,0 +1,22 @@
+{
+  "name": "nuxt-4-app",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "npm run typecheck && nuxt build",
+    "dev": "nuxt dev",
+    "preview": "nuxt preview",
+    "typecheck": "nuxt typecheck",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "csv-parse": "^7.0.3",
+    "nuxt": "^4.6.2",
+    "vue": "^3.5.44",
+    "vue-router": "^5.4.0"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.3",
+    "vue-tsc": "^3.3.13"
+  }
+}
