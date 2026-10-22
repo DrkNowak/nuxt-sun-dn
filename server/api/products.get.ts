@@ -9,6 +9,7 @@ export default defineEventHandler((event) => {
   const category = getFilterValue(query, 'category');
   const manufacturer = getFilterValue(query, 'manufacturer');
   const search = getFilterValue(query, 'search')?.trim().toLowerCase();
+  const sort = getFilterValue(query, 'sort');
 
   const rawMinPrice = getFilterValue(query, 'minPrice');
   const rawMaxPrice = getFilterValue(query, 'maxPrice');
@@ -18,8 +19,10 @@ export default defineEventHandler((event) => {
 
   const isInvalidMinPrice =
     minPrice !== null && (!Number.isFinite(minPrice) || minPrice < 0);
+
   const isInvalidMaxPrice =
     maxPrice !== null && (!Number.isFinite(maxPrice) || maxPrice < 0);
+
   const isInvalidRange = minPrice !== null && maxPrice !== null && minPrice > maxPrice;
 
   if (isInvalidMinPrice || isInvalidMaxPrice || isInvalidRange) {
@@ -29,7 +32,7 @@ export default defineEventHandler((event) => {
     });
   }
 
-  return products.filter((product) => {
+  const filteredProducts = products.filter((product) => {
     const matchesCategory = !category || product.category === category;
 
     const matchesManufacturer = !manufacturer || product.manufacturer === manufacturer;
@@ -52,4 +55,24 @@ export default defineEventHandler((event) => {
       matchesSearch
     );
   });
+
+  switch (sort) {
+    case 'price-asc':
+      filteredProducts.sort((a, b) => a.price - b.price);
+      break;
+
+    case 'price-desc':
+      filteredProducts.sort((a, b) => b.price - a.price);
+      break;
+
+    case 'name-asc':
+      filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+      break;
+
+    case 'name-desc':
+      filteredProducts.sort((a, b) => b.name.localeCompare(a.name));
+      break;
+  }
+
+  return filteredProducts;
 });
