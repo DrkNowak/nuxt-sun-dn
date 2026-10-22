@@ -11,6 +11,11 @@ export default defineEventHandler((event) => {
   const search = getFilterValue(query, 'search')?.trim().toLowerCase();
   const sort = getFilterValue(query, 'sort');
 
+  const minCapacity = getFilterValue(query, 'minCapacity');
+  const maxCapacity = getFilterValue(query, 'maxCapacity');
+  const minPower = getFilterValue(query, 'minPower');
+  const maxPower = getFilterValue(query, 'maxPower');
+
   const rawMinPrice = getFilterValue(query, 'minPrice');
   const rawMaxPrice = getFilterValue(query, 'maxPrice');
 
@@ -37,6 +42,20 @@ export default defineEventHandler((event) => {
 
     const matchesManufacturer = !manufacturer || product.manufacturer === manufacturer;
 
+    const matchesMinCapacity =
+      !minCapacity ||
+      (product.capacityKwh !== null && product.capacityKwh >= Number(minCapacity));
+
+    const matchesMaxCapacity =
+      !maxCapacity ||
+      (product.capacityKwh !== null && product.capacityKwh <= Number(maxCapacity));
+
+    const matchesMinPower =
+      !minPower || (product.powerW !== null && product.powerW >= Number(minPower));
+
+    const matchesMaxPower =
+      !maxPower || (product.powerW !== null && product.powerW <= Number(maxPower));
+
     const matchesMinPrice = minPrice === null || product.price >= minPrice;
 
     const matchesMaxPrice = maxPrice === null || product.price <= maxPrice;
@@ -52,7 +71,11 @@ export default defineEventHandler((event) => {
       matchesManufacturer &&
       matchesMinPrice &&
       matchesMaxPrice &&
-      matchesSearch
+      matchesSearch &&
+      matchesMinCapacity &&
+      matchesMaxCapacity &&
+      matchesMinPower &&
+      matchesMaxPower
     );
   });
 
@@ -71,6 +94,26 @@ export default defineEventHandler((event) => {
 
     case 'name-desc':
       filteredProducts.sort((a, b) => b.name.localeCompare(a.name));
+      break;
+
+    case 'capacity-asc':
+      filteredProducts.sort(
+        (a, b) => (a.capacityKwh ?? Infinity) - (b.capacityKwh ?? Infinity),
+      );
+      break;
+
+    case 'capacity-desc':
+      filteredProducts.sort(
+        (a, b) => (b.capacityKwh ?? -Infinity) - (a.capacityKwh ?? -Infinity),
+      );
+      break;
+
+    case 'power-asc':
+      filteredProducts.sort((a, b) => (a.powerW ?? Infinity) - (b.powerW ?? Infinity));
+      break;
+
+    case 'power-desc':
+      filteredProducts.sort((a, b) => (b.powerW ?? -Infinity) - (a.powerW ?? -Infinity));
       break;
   }
 

@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { parse } from 'csv-parse/sync';
 import type { Product } from '#shared/types/products';
+import { parseSpecifications } from './specifications';
 
 let cachedProducts: Product[] | null = null;
 
@@ -35,6 +36,8 @@ export function getProducts(): Product[] {
       throw new Error(`Invalid price at row ${index + 2}`);
     }
 
+    const { capacityKwh, powerW } = parseSpecifications(description);
+
     return {
       id: String(index + 1),
       name,
@@ -42,8 +45,8 @@ export function getProducts(): Product[] {
       description,
       category: category as Product['category'],
       price,
-      capacityKwh: null,
-      powerW: null,
+      capacityKwh,
+      powerW,
     };
   });
 
