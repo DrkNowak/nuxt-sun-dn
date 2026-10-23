@@ -31,6 +31,12 @@ useSeoMeta({
   ogTitle: title,
   ogDescription: description,
 });
+
+useHead({
+  htmlAttrs: {
+    lang: 'en',
+  },
+});
 </script>
 
 <template>

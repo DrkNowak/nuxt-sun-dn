@@ -5,12 +5,16 @@ import { parseSpecifications } from './specifications';
 
 let cachedProducts: Product[] | null = null;
 
-export function getProducts(): Product[] {
+export async function getProducts(): Promise<Product[]> {
   if (cachedProducts) {
     return cachedProducts;
   }
 
-  const csv = readFileSync('server/data/products.csv', 'utf-8');
+  const csv = await useStorage('assets:server').getItem<string>('products.csv');
+
+  if (csv === null) {
+    throw new Error('Products CSV not found');
+  }
 
   const rows: Record<string, string>[] = parse(csv, {
     columns: true,

@@ -28,8 +28,8 @@ const compareNullable = (a: number | null, b: number | null): number => {
   return a - b;
 };
 
-export default defineEventHandler((event) => {
-  const products = getProducts();
+export default defineEventHandler(async (event) => {
+  const products = await getProducts();
   const query = getQuery(event);
 
   const category = getFilterValue(query, 'category');
