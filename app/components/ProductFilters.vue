@@ -1,22 +1,39 @@
 <script setup lang="ts">
 const route = useRoute();
 
-const category = ref('');
-const manufacturer = ref('');
-const minPrice = ref('');
-const maxPrice = ref('');
-const search = ref('');
-const minCapacity = ref('');
-const maxCapacity = ref('');
-const minPower = ref('');
-const maxPower = ref('');
-const sort = ref('');
+const filters = reactive({
+  category: '',
+  manufacturer: '',
+  minPrice: '',
+  maxPrice: '',
+  search: '',
+  minCapacity: '',
+  maxCapacity: '',
+  minPower: '',
+  maxPower: '',
+  sort: '',
+});
+
+type FilterKey = keyof typeof filters;
+
+const filterKeys: FilterKey[] = [
+  'category',
+  'manufacturer',
+  'minPrice',
+  'maxPrice',
+  'search',
+  'minCapacity',
+  'maxCapacity',
+  'minPower',
+  'maxPower',
+  'sort',
+];
 
 const validationError = computed(() => {
   const ranges = [
-    { min: minPrice.value, max: maxPrice.value, label: 'Price' },
-    { min: minCapacity.value, max: maxCapacity.value, label: 'Capacity' },
-    { min: minPower.value, max: maxPower.value, label: 'Power' },
+    { min: filters.minPrice, max: filters.maxPrice, label: 'Price' },
+    { min: filters.minCapacity, max: filters.maxCapacity, label: 'Capacity' },
+    { min: filters.minPower, max: filters.maxPower, label: 'Power' },
   ];
 
   for (const { min, max, label } of ranges) {
@@ -33,35 +50,23 @@ const { data: manufacturers } = await useFetch<string[]>('/api/manufacturers');
 watch(
   () => route.query,
   (query) => {
-    category.value = typeof query.category === 'string' ? query.category : '';
-    manufacturer.value = typeof query.manufacturer === 'string' ? query.manufacturer : '';
-    minPrice.value = typeof query.minPrice === 'string' ? query.minPrice : '';
-    maxPrice.value = typeof query.maxPrice === 'string' ? query.maxPrice : '';
-    search.value = typeof query.search === 'string' ? query.search : '';
-    minCapacity.value = typeof query.minCapacity === 'string' ? query.minCapacity : '';
-    maxCapacity.value = typeof query.maxCapacity === 'string' ? query.maxCapacity : '';
-    minPower.value = typeof query.minPower === 'string' ? query.minPower : '';
-    maxPower.value = typeof query.maxPower === 'string' ? query.maxPower : '';
-    sort.value = typeof query.sort === 'string' ? query.sort : '';
+    for (const key of filterKeys) {
+      filters[key] = typeof query[key] === 'string' ? query[key] : '';
+    }
   },
   { immediate: true },
 );
 
 function applyFilters() {
+  const filterQuery = Object.fromEntries(
+    filterKeys.map((key) => [key, filters[key] || undefined]),
+  );
+
   return navigateTo({
     path: '/',
     query: {
       ...route.query,
-      category: category.value || undefined,
-      manufacturer: manufacturer.value || undefined,
-      minPrice: minPrice.value || undefined,
-      maxPrice: maxPrice.value || undefined,
-      search: search.value || undefined,
-      minCapacity: minCapacity.value || undefined,
-      maxCapacity: maxCapacity.value || undefined,
-      minPower: minPower.value || undefined,
-      maxPower: maxPower.value || undefined,
-      sort: sort.value || undefined,
+      ...filterQuery,
     },
   });
 }
@@ -76,7 +81,7 @@ function resetFilters() {
     <h2>Filters</h2>
 
     <label for="category">Category</label>
-    <select id="category" v-model="category">
+    <select id="category" v-model="filters.category">
       <option value="">All categories</option>
       <option value="battery">Batteries</option>
       <option value="solar panel">Solar panels</option>
@@ -84,7 +89,7 @@ function resetFilters() {
     </select>
 
     <label for="manufacturer">Manufacturer</label>
-    <select id="manufacturer" v-model="manufacturer">
+    <select id="manufacturer" v-model="filters.manufacturer">
       <option value="">All manufacturers</option>
       <option v-for="name in manufacturers ?? []" :key="name" :value="name">
         {{ name }}
@@ -92,28 +97,28 @@ function resetFilters() {
     </select>
 
     <label for="minPrice">Minimum price</label>
-    <input id="minPrice" v-model="minPrice" type="number" min="0" />
+    <input id="minPrice" v-model="filters.minPrice" type="number" min="0" />
 
     <label for="maxPrice">Maximum price</label>
-    <input id="maxPrice" v-model="maxPrice" type="number" min="0" />
+    <input id="maxPrice" v-model="filters.maxPrice" type="number" min="0" />
 
     <label for="search">Search products</label>
-    <input id="search" v-model="search" type="search" />
+    <input id="search" v-model="filters.search" type="search" />
 
     <label for="minCapacity">Minimum capacity (kWh)</label>
-    <input id="minCapacity" v-model="minCapacity" type="number" min="0" step="0.1" />
+    <input id="minCapacity" v-model="filters.minCapacity" type="number" min="0" step="0.1" />
 
     <label for="maxCapacity">Maximum capacity (kWh)</label>
-    <input id="maxCapacity" v-model="maxCapacity" type="number" min="0" step="0.1" />
+    <input id="maxCapacity" v-model="filters.maxCapacity" type="number" min="0" step="0.1" />
 
     <label for="minPower">Minimum power (W)</label>
-    <input id="minPower" v-model="minPower" type="number" min="0" step="1" />
+    <input id="minPower" v-model="filters.minPower" type="number" min="0" step="1" />
 
     <label for="maxPower">Maximum power (W)</label>
-    <input id="maxPower" v-model="maxPower" type="number" min="0" step="1" />
+    <input id="maxPower" v-model="filters.maxPower" type="number" min="0" step="1" />
 
     <label for="sort">Sort by</label>
-    <select id="sort" v-model="sort">
+    <select id="sort" v-model="filters.sort">
       <option value="">Default</option>
       <option value="price-asc">Price: low to high</option>
       <option value="price-desc">Price: high to low</option>
@@ -162,11 +167,11 @@ function resetFilters() {
 
   select {
     appearance: none;
-    padding-right: var(--space-xl);
+    padding-right: 40px;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2314251f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 12px center;
-    background-size: var(--font-size-m);
+    background-size: 16px;
   }
 
   button {
