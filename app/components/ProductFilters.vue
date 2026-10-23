@@ -12,6 +12,22 @@ const minPower = ref('');
 const maxPower = ref('');
 const sort = ref('');
 
+const validationError = computed(() => {
+  const ranges = [
+    { min: minPrice.value, max: maxPrice.value, label: 'Price' },
+    { min: minCapacity.value, max: maxCapacity.value, label: 'Capacity' },
+    { min: minPower.value, max: maxPower.value, label: 'Power' },
+  ];
+
+  for (const { min, max, label } of ranges) {
+    if (min !== '' && max !== '' && Number(min) > Number(max)) {
+      return `${label}: minimum cannot exceed maximum`;
+    }
+  }
+
+  return null;
+});
+
 const { data: manufacturers } = await useFetch<string[]>('/api/manufacturers');
 
 watch(
@@ -85,16 +101,16 @@ function resetFilters() {
     <input id="search" v-model="search" type="search" />
 
     <label for="minCapacity">Minimum capacity (kWh)</label>
-    <input id="minCapacity" v-model="minCapacity" type="number" min="0" step="any" />
+    <input id="minCapacity" v-model="minCapacity" type="number" min="0" step="0.1" />
 
     <label for="maxCapacity">Maximum capacity (kWh)</label>
-    <input id="maxCapacity" v-model="maxCapacity" type="number" min="0" step="any" />
+    <input id="maxCapacity" v-model="maxCapacity" type="number" min="0" step="0.1" />
 
     <label for="minPower">Minimum power (W)</label>
-    <input id="minPower" v-model="minPower" type="number" min="0" step="any" />
+    <input id="minPower" v-model="minPower" type="number" min="0" step="1" />
 
     <label for="maxPower">Maximum power (W)</label>
-    <input id="maxPower" v-model="maxPower" type="number" min="0" step="any" />
+    <input id="maxPower" v-model="maxPower" type="number" min="0" step="1" />
 
     <label for="sort">Sort by</label>
     <select id="sort" v-model="sort">
@@ -109,7 +125,11 @@ function resetFilters() {
       <option value="power-desc">Power: high to low</option>
     </select>
 
-    <button type="submit">Apply filters</button>
+    <p v-if="validationError" class="error" role="alert">
+      {{ validationError }}
+    </p>
+
+    <button type="submit" :disabled="!!validationError">Apply filters</button>
     <button type="button" @click="resetFilters">Reset filters</button>
   </form>
 </template>
@@ -157,5 +177,15 @@ function resetFilters() {
 .filters :is(input, select, button):focus-visible {
   outline: 2px solid #2563eb;
   outline-offset: 2px;
+}
+
+.error {
+  color: #dc2626;
+  font-size: 14px;
+}
+
+.filters button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 </style>
