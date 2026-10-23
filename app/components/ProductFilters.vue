@@ -134,58 +134,58 @@ function resetFilters() {
   </form>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .filters {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
+  gap: var(--space-sm);
 
-.filters h2 {
-  margin: 0 0 12px;
-}
+  h2 {
+    margin: 0 0 var(--space-sm);
+  }
 
-.filters label {
-  font-size: 14px;
-  font-weight: 600;
-}
+  label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+  }
 
-.filters input,
-.filters select {
-  width: 100%;
-  min-width: 0;
-  padding: 10px;
-  border: 1px solid #aaa;
-  border-radius: 6px;
-  background: white;
-  font: inherit;
-}
+  input,
+  select {
+    width: 100%;
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid var(--color-border-control);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    font: inherit;
+  }
 
-.filters button {
-  padding: 12px;
-  border: 1px solid #333;
-  border-radius: 6px;
-  cursor: pointer;
-  font: inherit;
-}
+  button {
+    padding: var(--space-sm);
+    border: 1px solid var(--color-border-button);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font: inherit;
 
-.filters button[type='submit'] {
-  background: #222;
-  color: white;
-}
+    &[type='submit'] {
+      background: var(--color-primary);
+      color: var(--color-surface);
+    }
 
-.filters :is(input, select, button):focus-visible {
-  outline: 2px solid #2563eb;
-  outline-offset: 2px;
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  :is(input, select, button):focus-visible {
+    outline: 2px solid var(--color-focus-control);
+    outline-offset: 2px;
+  }
 }
 
 .error {
-  color: #dc2626;
-  font-size: 14px;
-}
-
-.filters button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  color: var(--color-error);
+  font-size: var(--font-size-sm);
 }
 </style>

@@ -1,68 +1,73 @@
+@use 'tokens';
+@use 'breakpoints';
+
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700&display=swap');
 
 :root {
-  --ink: #14251f;
-  --muted: #64716c;
-  --line: #dce3de;
-  --surface: #fff;
-  --background: #f6f7f3;
-  --accent: #234d3c;
-  font-family: 'DM Sans', system-ui, sans-serif;
-  color: var(--ink);
-  background: var(--background);
+  font-family: var(--font-family-base);
+  color: var(--color-text);
+  background: var(--color-background);
 }
 
 * {
   box-sizing: border-box;
 }
+
 body {
   margin: 0;
-  background: var(--background);
+  background: var(--color-background);
 }
+
 button,
 input,
 select {
   font: inherit;
 }
+
 a {
   color: inherit;
 }
 
 :focus-visible {
-  outline: 3px solid #8bb6a3;
+  outline: 3px solid var(--color-focus);
   outline-offset: 2px;
 }
 
-@media (max-width: 1080px) {
+@media (max-width: breakpoints.$products-two-columns) {
   .products {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: breakpoints.$catalog-single-column) {
   .page {
     width: min(100% - 24px, 620px);
   }
+
   header span {
     display: none;
   }
+
   .catalog {
     grid-template-columns: 1fr;
   }
+
   aside {
     position: static;
   }
+
   .filters {
     grid-template-columns: 1fr 1fr;
-  }
-  .filters-heading,
-  .filters > button,
-  .filters > label:first-of-type {
-    grid-column: 1 / -1;
+
+    &-heading,
+    > button,
+    > label:first-of-type {
+      grid-column: 1 / -1;
+    }
   }
 }
 
-@media (max-width: 520px) {
+@media (max-width: breakpoints.$mobile) {
   .filters,
   .products {
     grid-template-columns: 1fr;

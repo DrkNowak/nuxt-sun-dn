@@ -75,40 +75,42 @@ useSeoMeta({
   </main>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+@use '../assets/scss/breakpoints';
+
 .page {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 32px 24px;
+  padding: var(--space-xl) var(--space-lg);
 }
 
 .page-header {
-  margin-bottom: 32px;
-}
+  margin-bottom: var(--space-xl);
 
-.page-header h1 {
-  margin-bottom: 8px;
+  h1 {
+    margin-bottom: var(--space-xs);
+  }
 }
 
 .catalog {
   display: grid;
   grid-template-columns: 260px minmax(0, 1fr);
-  gap: 32px;
+  gap: var(--space-xl);
   align-items: start;
 }
 
 .sidebar {
-  padding: 24px;
-  border: 1px solid #ddd;
-  border-radius: 12px;
+  padding: var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
 }
 
 .results {
   min-width: 0;
-}
 
-.results h2 {
-  margin-bottom: 24px;
+  h2 {
+    margin-bottom: var(--space-lg);
+  }
 }
 
 .products {
@@ -117,18 +119,18 @@ useSeoMeta({
   gap: 20px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: breakpoints.$page-compact) {
   .page {
-    padding: 20px 16px;
+    padding: 20px var(--space-md);
   }
 
   .catalog {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: var(--space-lg);
   }
 
   .sidebar {
-    padding: 16px;
+    padding: var(--space-md);
   }
 }
 </style>

@@ -22,22 +22,22 @@ defineProps<{
   </article>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .product-card {
   padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
   overflow-wrap: anywhere;
-}
 
-.product-card h2 {
-  font-size: 18px;
-  margin-bottom: 12px;
-}
+  h2 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-sm);
+  }
 
-.product-card p {
-  margin: 8px 0;
-  line-height: 1.5;
+  p {
+    margin: var(--space-xs) 0;
+    line-height: var(--line-height-body);
+  }
 }
 </style>
