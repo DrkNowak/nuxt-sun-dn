@@ -76,7 +76,7 @@ W przeciwnym razie algorytmy np. Google'a mogą potrzebować więcej czasu na in
 
 # Lightouse
 
-Performance 91/100
+Performance 91-98/100 (lokalnie i na vercelu)
 Accessibility 100/100
 Best Practices 100/100
 SEO 100/100
