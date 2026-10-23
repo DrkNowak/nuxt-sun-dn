@@ -72,6 +72,10 @@ function applyFilters() {
 }
 
 function resetFilters() {
+  for (const key of filterKeys) {
+    filters[key] = '';
+  }
+
   return navigateTo('/');
 }
 </script>
@@ -106,16 +110,26 @@ function resetFilters() {
     <input id="search" v-model="filters.search" type="search" />
 
     <label for="minCapacity">Minimum capacity (kWh)</label>
-    <input id="minCapacity" v-model="filters.minCapacity" type="number" min="0" step="0.1" />
+    <input
+      id="minCapacity"
+      v-model="filters.minCapacity"
+      type="number"
+      min="0"
+      step="any" />
 
     <label for="maxCapacity">Maximum capacity (kWh)</label>
-    <input id="maxCapacity" v-model="filters.maxCapacity" type="number" min="0" step="0.1" />
+    <input
+      id="maxCapacity"
+      v-model="filters.maxCapacity"
+      type="number"
+      min="0"
+      step="any" />
 
     <label for="minPower">Minimum power (W)</label>
-    <input id="minPower" v-model="filters.minPower" type="number" min="0" step="1" />
+    <input id="minPower" v-model="filters.minPower" type="number" min="0" step="any" />
 
     <label for="maxPower">Maximum power (W)</label>
-    <input id="maxPower" v-model="filters.maxPower" type="number" min="0" step="1" />
+    <input id="maxPower" v-model="filters.maxPower" type="number" min="0" step="any" />
 
     <label for="sort">Sort by</label>
     <select id="sort" v-model="filters.sort">
