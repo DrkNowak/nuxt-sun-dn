@@ -120,4 +120,42 @@ function resetFilters() {
   flex-direction: column;
   gap: 12px;
 }
+
+.filters h2 {
+  margin: 0 0 12px;
+}
+
+.filters label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.filters input,
+.filters select {
+  width: 100%;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid #aaa;
+  border-radius: 6px;
+  background: white;
+  font: inherit;
+}
+
+.filters button {
+  padding: 12px;
+  border: 1px solid #333;
+  border-radius: 6px;
+  cursor: pointer;
+  font: inherit;
+}
+
+.filters button[type='submit'] {
+  background: #222;
+  color: white;
+}
+
+.filters :is(input, select, button):focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
 </style>

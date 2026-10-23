@@ -21,3 +21,23 @@ defineProps<{
     <p>{{ product.description }}</p>
   </article>
 </template>
+
+<style scoped>
+.product-card {
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background: white;
+  overflow-wrap: anywhere;
+}
+
+.product-card h2 {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.product-card p {
+  margin: 8px 0;
+  line-height: 1.5;
+}
+</style>
