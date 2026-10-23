@@ -2,6 +2,25 @@ const getFilterValue = (query: Record<string, unknown>, key: string) => {
   return typeof query[key] === 'string' ? query[key] : null;
 };
 
+const getNumberFilter = (query: Record<string, unknown>, key: string): number | null => {
+  const value = getFilterValue(query, key);
+
+  if (value === null || value.trim() === '') {
+    return null;
+  }
+
+  const number = Number(value);
+
+  if (!Number.isFinite(number) || number < 0) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: `Invalid filter: ${key}`,
+    });
+  }
+
+  return number;
+};
+
 export default defineEventHandler((event) => {
   const products = getProducts();
   const query = getQuery(event);
@@ -11,29 +30,26 @@ export default defineEventHandler((event) => {
   const search = getFilterValue(query, 'search')?.trim().toLowerCase();
   const sort = getFilterValue(query, 'sort');
 
-  const minCapacity = getFilterValue(query, 'minCapacity');
-  const maxCapacity = getFilterValue(query, 'maxCapacity');
-  const minPower = getFilterValue(query, 'minPower');
-  const maxPower = getFilterValue(query, 'maxPower');
+  const minPrice = getNumberFilter(query, 'minPrice');
+  const maxPrice = getNumberFilter(query, 'maxPrice');
 
-  const rawMinPrice = getFilterValue(query, 'minPrice');
-  const rawMaxPrice = getFilterValue(query, 'maxPrice');
+  const minCapacity = getNumberFilter(query, 'minCapacity');
+  const maxCapacity = getNumberFilter(query, 'maxCapacity');
 
-  const minPrice = rawMinPrice?.trim() ? Number(rawMinPrice) : null;
-  const maxPrice = rawMaxPrice?.trim() ? Number(rawMaxPrice) : null;
+  const minPower = getNumberFilter(query, 'minPower');
+  const maxPower = getNumberFilter(query, 'maxPower');
 
-  const isInvalidMinPrice =
-    minPrice !== null && (!Number.isFinite(minPrice) || minPrice < 0);
+  const isInvalidRange = (min: number | null, max: number | null) =>
+    min !== null && max !== null && min > max;
 
-  const isInvalidMaxPrice =
-    maxPrice !== null && (!Number.isFinite(maxPrice) || maxPrice < 0);
-
-  const isInvalidRange = minPrice !== null && maxPrice !== null && minPrice > maxPrice;
-
-  if (isInvalidMinPrice || isInvalidMaxPrice || isInvalidRange) {
+  if (
+    isInvalidRange(minPrice, maxPrice) ||
+    isInvalidRange(minCapacity, maxCapacity) ||
+    isInvalidRange(minPower, maxPower)
+  ) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Invalid price filter',
+      statusMessage: 'Invalid filter range',
     });
   }
 
@@ -43,18 +59,18 @@ export default defineEventHandler((event) => {
     const matchesManufacturer = !manufacturer || product.manufacturer === manufacturer;
 
     const matchesMinCapacity =
-      !minCapacity ||
-      (product.capacityKwh !== null && product.capacityKwh >= Number(minCapacity));
+      minCapacity === null ||
+      (product.capacityKwh !== null && product.capacityKwh >= minCapacity);
 
     const matchesMaxCapacity =
-      !maxCapacity ||
-      (product.capacityKwh !== null && product.capacityKwh <= Number(maxCapacity));
+      maxCapacity === null ||
+      (product.capacityKwh !== null && product.capacityKwh <= maxCapacity);
 
     const matchesMinPower =
-      !minPower || (product.powerW !== null && product.powerW >= Number(minPower));
+      minPower === null || (product.powerW !== null && product.powerW >= minPower);
 
     const matchesMaxPower =
-      !maxPower || (product.powerW !== null && product.powerW <= Number(maxPower));
+      maxPower === null || (product.powerW !== null && product.powerW <= maxPower);
 
     const matchesMinPrice = minPrice === null || product.price >= minPrice;
 
