@@ -11,25 +11,19 @@ const {
   query: computed(() => route.query),
 });
 
-const category = computed(() => {
-  return typeof route.query.category === 'string' ? route.query.category : null;
-});
-
-const manufacturer = computed(() => {
-  return typeof route.query.manufacturer === 'string' ? route.query.manufacturer : null;
-});
-
 const title = computed(() => {
-  const filters = [category.value, manufacturer.value].filter(Boolean);
+  const { category, manufacturer } = route.query;
 
-  return filters.length
-    ? `${filters.join(' - ')} | sun.store`
-    : 'Solar equipment marketplace | sun.store';
+  return (
+    [category, manufacturer]
+      .filter((value): value is string => typeof value === 'string' && !!value)
+      .join(' - ') || 'Solar equipment marketplace | sun.store'
+  );
 });
 
-const description = computed(() => {
-  return `Browse ${products.value?.length ?? 0} solar products on sun.store.`;
-});
+const description = computed(
+  () => `Browse ${products.value?.length ?? 0} solar products on sun.store.`,
+);
 
 useSeoMeta({
   title,
