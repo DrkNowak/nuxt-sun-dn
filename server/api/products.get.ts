@@ -21,11 +21,15 @@ const getNumberFilter = (query: Record<string, unknown>, key: string): number | 
   return number;
 };
 
-const compareNullable = (a: number | null, b: number | null): number => {
+const compareNullable = (
+  a: number | null,
+  b: number | null,
+  direction: 'asc' | 'desc',
+): number => {
   if (a === null) return b === null ? 0 : 1;
   if (b === null) return -1;
 
-  return a - b;
+  return direction === 'asc' ? a - b : b - a;
 };
 
 export default defineEventHandler(async (event) => {
@@ -120,19 +124,23 @@ export default defineEventHandler(async (event) => {
       break;
 
     case 'capacity-asc':
-      filteredProducts.sort((a, b) => compareNullable(a.capacityKwh, b.capacityKwh));
+      filteredProducts.sort((a, b) =>
+        compareNullable(a.capacityKwh, b.capacityKwh, 'asc'),
+      );
       break;
 
     case 'capacity-desc':
-      filteredProducts.sort((a, b) => compareNullable(b.capacityKwh, a.capacityKwh));
+      filteredProducts.sort((a, b) =>
+        compareNullable(a.capacityKwh, b.capacityKwh, 'desc'),
+      );
       break;
 
     case 'power-asc':
-      filteredProducts.sort((a, b) => compareNullable(a.powerW, b.powerW));
+      filteredProducts.sort((a, b) => compareNullable(a.powerW, b.powerW, 'asc'));
       break;
 
     case 'power-desc':
-      filteredProducts.sort((a, b) => compareNullable(b.powerW, a.powerW));
+      filteredProducts.sort((a, b) => compareNullable(a.powerW, b.powerW, 'desc'));
       break;
   }
 

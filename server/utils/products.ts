@@ -1,4 +1,3 @@
-import { readFileSync } from 'node:fs';
 import { parse } from 'csv-parse/sync';
 import type { Product } from '#shared/types/products';
 import { parseSpecifications } from './specifications';

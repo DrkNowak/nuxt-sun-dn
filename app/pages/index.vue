@@ -54,9 +54,9 @@ useHead({
       <section class="results" aria-label="Product results">
         <p v-if="status === 'pending'" role="status">Loading products...</p>
 
-        <p v-if="error" role="alert">Failed to load products.</p>
+        <p v-else-if="status === 'error'" role="alert">Failed to load products.</p>
 
-        <template v-if="products">
+        <template v-else-if="products">
           <h2>Found {{ products.length }} products</h2>
 
           <p v-if="products.length === 0">
